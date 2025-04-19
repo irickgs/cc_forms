@@ -16,6 +16,7 @@ div {
 h2 {
     color: yellow;
     font-size: 30px;
+    display: block;
 }
 
 .logo {
