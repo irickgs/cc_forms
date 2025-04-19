@@ -3,6 +3,11 @@
     text-align: center;
 }
 
+:root {
+    --animation-duration: 5s;
+    --animation-delay: 10s;
+}
+
 div {
     display: flex;
     flex-direction: column;
@@ -24,3 +29,24 @@ h2 {
     height: auto;
         
 }
+
+.logo {
+    display: inline-block;
+    margin: 0 0.5rem;
+    
+    animation: backInLeft;
+    /* referring directly to the animation's @keyframe declaration */
+    animation-duration: 3s;
+    /* don't forget to set a duration! */
+}
+
+.work {
+    display: inline-block;
+    margin: 0 0.5rem;
+    
+    animation: bounceInRight;
+        /* referring directly to the animation's @keyframe declaration */
+    animation-duration: 6s;
+        /* don't forget to set a duration! */
+}
+
