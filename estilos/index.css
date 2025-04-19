@@ -3,6 +3,16 @@
     text-align: center;
 }
 
+div {
+    display: flex;
+    flex-direction: column;
+    /* Para apilar los elementos verticalmente */
+    align-items: center;
+    /* Centra los elementos horizontalmente */
+    text-align: center;
+    /* Por si acaso el contenido interno necesita centrarse */
+}
+
 h2 {
     color: yellow;
     font-size: 30px;
@@ -10,6 +20,6 @@ h2 {
 
 .logo {
     width: 300px;
-    height: 50%;
+    height: auto;
         
 }
