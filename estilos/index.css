@@ -60,3 +60,15 @@ h2 {
     /* don't forget to set a duration! */
     }
 
+.arueda {
+    width: 60px;
+    height: auto;
+    background-color: black;
+    display: inline-block;
+    margin: 0 0.5rem;
+    
+    animation: backInLeft;
+    /* referring directly to the animation's @keyframe declaration */
+    animation-duration: 10s;
+    /* don't forget to set a duration! */
+}
