@@ -82,7 +82,10 @@ h2 {
     font-style: normal;
 }
 
-.nav-links { 
-    
-    
+.rosa { 
+    color: pink;
+    display: inline-block;
+    margin: 0 0.5rem;
+    animation: flip;  
+    animation-duration: 10s;
 }
