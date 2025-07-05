@@ -1,6 +1,6 @@
 * {
     background-color: black;
-    text-align: center;
+    /*text-align: center;*/
 }
 
 :root {
@@ -88,4 +88,26 @@ h2 {
     margin: 0 0.5rem;
     animation: flip;  
     animation-duration: 10s;
+    text-align: center;
+}
+.amarillo {
+    color: yellow;
+    display: inline-block;
+    margin: 0 0.5rem;
+    animation: zoomInDown;
+    animation-duration: 5s;
+    text-align: center;
+}
+
+
+.container {
+    padding: 0;
+    /* Eliminar espaciado interno */
+    border-radius: 8px;
+    max-width: 600px;
+    margin: auto;
+    text-align: left;
+    /* Justificar el texto a la izquierda */
+    color: white;
+    /* Color del texto blanco */
 }
