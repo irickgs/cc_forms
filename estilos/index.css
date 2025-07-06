@@ -86,8 +86,8 @@ h2 {
     color: pink;
     display: inline-block;
     margin: 0 0.5rem;
-    animation: flip;  
-    animation-duration: 10s;
+    animation: zoomInDown;  
+    animation-duration: 4s;
     text-align: center;
 }
 .amarillo {
@@ -112,7 +112,7 @@ h2 {
     /* Color del texto blanco */
 }
 
-.video {
+.videos {
     
     display: block;
     margin: 0 auto;
