@@ -111,3 +111,10 @@ h2 {
     color: white;
     /* Color del texto blanco */
 }
+
+.video {
+    
+    display: block;
+    margin: 0 auto;
+    /* Centrar el video */
+}
