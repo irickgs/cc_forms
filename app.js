@@ -2,30 +2,43 @@
 const canvas = document.querySelector('#fireworks');
 const ctx = canvas.getContext('2d');
 const image = document.querySelector('#fallback');
+const secondary = document.querySelector('#secondary-logo');
+const swapButton = document.querySelector('#swap-logo');
+let swapped = false;
 const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 let width = 0, height = 0, pixels = [], sparks = [], last = 0, previous = null;
 let bounds = {x:0,y:0,w:0,h:0};
 const random = (min,max) => min + Math.random() * (max-min);
 function prepare() {
-  if (!ctx || !image.naturalWidth) return;
+  if (!ctx || !image.naturalWidth || !secondary.naturalWidth) return;
   width = window.innerWidth; height = window.innerHeight;
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = width*dpr; canvas.height = height*dpr;
   ctx.setTransform(dpr,0,0,dpr,0,0);
-  const w = Math.min(width*.86,1100), h = w*image.naturalHeight/image.naturalWidth;
+  const primaryImage = swapped ? secondary : image;
+  const smallImage = swapped ? image : secondary;
+  const w = Math.min(width*.86,1100,height*.66*primaryImage.naturalWidth/primaryImage.naturalHeight);
+  const h = w*primaryImage.naturalHeight/primaryImage.naturalWidth;
   bounds = {x:(width-w)/2,y:height*.47-h/2,w,h};
-  const sample = document.createElement('canvas');
-  sample.width = Math.ceil(w); sample.height = Math.ceil(h);
-  const sampleCtx = sample.getContext('2d',{willReadFrequently:true});
-  if (!sampleCtx) return;
-  sampleCtx.drawImage(image,0,0,w,h);
-  const data = sampleCtx.getImageData(0,0,sample.width,sample.height).data;
+  const slot = swapButton.getBoundingClientRect();
+  const smallW = Math.min(slot.width,slot.height*smallImage.naturalWidth/smallImage.naturalHeight);
+  const smallH = smallW*smallImage.naturalHeight/smallImage.naturalWidth;
   pixels = []; sparks = []; previous = null;
-  const step = width < 600 ? 2 : 3;
-  for(let y=0;y<sample.height;y+=step) for(let x=0;x<sample.width;x+=step) {
-    const i=(y*sample.width+x)*4;
-    if(data[i+3]<30 || Math.max(data[i],data[i+1],data[i+2])<45) continue;
-    pixels.push({x:bounds.x+x,y:bounds.y+y,size:step+.4,color:`rgb(${data[i]},${data[i+1]},${data[i+2]})`,hiddenUntil:0});
+  for (const [source, box, step] of [
+    [primaryImage,bounds,width < 600 ? 2 : 3],
+    [smallImage,{x:slot.left+(slot.width-smallW)/2,y:slot.top+(slot.height-smallH)/2,w:smallW,h:smallH},1.5]
+  ]) {
+    const sample = document.createElement('canvas');
+    sample.width = Math.ceil(box.w); sample.height = Math.ceil(box.h);
+    const sampleCtx = sample.getContext('2d',{willReadFrequently:true});
+    if (!sampleCtx) return;
+    sampleCtx.drawImage(source,0,0,box.w,box.h);
+    const data = sampleCtx.getImageData(0,0,sample.width,sample.height).data;
+    for(let y=0;y<sample.height;y+=step) for(let x=0;x<sample.width;x+=step) {
+      const i=(Math.floor(y)*sample.width+Math.floor(x))*4;
+      if(data[i+3]<30 || Math.max(data[i],data[i+1],data[i+2])<45) continue;
+      pixels.push({x:box.x+x,y:box.y+y,size:step+.4,color:`rgb(${data[i]},${data[i+1]},${data[i+2]})`,hiddenUntil:0});
+    }
   }
   document.body.classList.add('ready');
 }
@@ -54,6 +67,14 @@ function interact(event) {
   } else burst(x,y,width<600?38:52);
   previous={x,y};
 }
+swapButton.addEventListener('click',()=>{
+  swapped = !swapped;
+  swapButton.setAttribute('aria-label',swapped ? 'Mostrar Ciclismo Córdoba como logo principal' : 'Mostrar M3 como logo principal');
+  prepare();
+});
+swapButton.addEventListener('pointermove',event=>{if(!reduced.matches)interact(event);});
+swapButton.addEventListener('pointerdown',event=>{previous=null;if(!reduced.matches)interact(event);});
+swapButton.addEventListener('pointerleave',()=>{previous=null;});
 canvas.addEventListener('pointermove',event=>{if(!reduced.matches)interact(event);});
 canvas.addEventListener('pointerdown',event=>{previous=null;interact(event);});
 canvas.addEventListener('pointerleave',()=>{previous=null;});
@@ -86,7 +107,10 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 if(ctx) {
-  if(image.complete && image.naturalWidth)prepare();else image.addEventListener('load',prepare,{once:true});
+  for (const logo of [image,secondary]) {
+    if (!logo.complete) logo.addEventListener('load',prepare,{once:true});
+  }
+  prepare();
   window.addEventListener('resize',prepare);
   requestAnimationFrame(frame);
 }
